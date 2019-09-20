@@ -1,3 +1,4 @@
 /target
 /conf
+Cargo.lock
 **/*.rs.bk
