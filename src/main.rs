@@ -1,7 +1,9 @@
 mod configuration;
 use crate::configuration::config::Config;
 
+use configuration::httpdconf as CONFIG;
+
 fn main() {
-    let d = configuration::httpdconf::HttpdConf {filepath: "/desktop/files"};
-    println!("{:?}", d.lookup());
+  let config = CONFIG::HttpdConf {filepath: "/desktop/files"};
+  println!("{:?}", config.lookup());
 }
