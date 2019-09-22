@@ -1,6 +1,7 @@
 use std::io::Error;
+use std::collections::HashMap;
 
 pub trait Config {
-  fn load(&self, path: &'static str) -> Result<(), Error>;
-  fn lookup(&self) -> String;
+  fn load(&mut self) -> Result<(), Error>;
+  fn get_config(&self) -> &HashMap<String, String>;
 }
