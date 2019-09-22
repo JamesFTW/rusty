@@ -1,5 +1,6 @@
 
 use super::config::Config as Config;
+use crate::configuration::trim::trim as trim;
 
 use std::collections::HashMap;
 use std::fs;
@@ -29,11 +30,11 @@ impl Config for HttpdConf {
       let tokens: Vec<&str> = ll.split(" ").collect();
 
       if tokens[0].to_string() == "ScriptAlias" {
-        let string = trim_string(tokens[2].to_string());
+        let string = trim(tokens[2].to_string());
         self.config_map.insert(tokens[1].to_string(), string);
 
       } else if tokens[0].to_string() == "Alias" {
-        let string = trim_string(tokens[2].to_string());
+        let string = trim(tokens[2].to_string());
         self.config_map.insert(tokens[1].to_string(), string);
 
       } else {
@@ -41,7 +42,7 @@ impl Config for HttpdConf {
         let first_el = char_vec[0];
 
         if first_el == '\"' {
-          let string = trim_string(tokens[1].to_string());
+          let string = trim(tokens[1].to_string());
           self.config_map.insert(tokens[0].to_string(), string);
 
         } else {
@@ -55,15 +56,4 @@ impl Config for HttpdConf {
   fn get_config(&self) -> &HashMap<String, String> {
     return &self.config_map;
   }
-}
-
-fn trim_string(s:String) -> String {
-  let mut char_vec: Vec<char> = s.chars().collect();
-  char_vec.remove(0);
-
-  let veclen = char_vec.len() - 1;
-  char_vec.remove(veclen);
-
-  let string: String = char_vec.into_iter().collect();
-  string
 }
