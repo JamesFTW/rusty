@@ -1,6 +1,6 @@
 
 use super::config::Config as Config;
-use crate::configuration::trim::trim as trim;
+use crate::configuration::util::trim as trim;
 
 use std::collections::HashMap;
 use std::fs;
