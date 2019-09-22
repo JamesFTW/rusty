@@ -7,37 +7,63 @@ use std::io::{BufReader, BufRead, Error};
 
 pub struct HttpdConf {
   pub filepath: &'static str,
+  pub config_map: HashMap<String, String>,
+}
+
+impl HttpdConf {
+  pub fn new(path: &'static str) -> HttpdConf {
+    HttpdConf {
+      filepath: path,
+      config_map: HashMap::new()
+    }
+  }
 }
 
 impl Config for HttpdConf {
-  fn load(&self, path: &'static str) -> Result<(), Error> {
-    let mut config_map: HashMap<String, String> = HashMap::new();
-
-    /**
-     * Going to use a single map for all config.
-     * {
-     *  httpdConf: 'baz',
-     *  script_Alias: {
-     *    'foo': 'bar'
-     *  }
-     * }
-     */
-    let input = fs::File::open(path)?;
+  fn load(&mut self) -> Result<(), Error> {
+    let input = fs::File::open(self.filepath)?;
     let buffered = BufReader::new(input);
 
     for line in buffered.lines() {
       let ll = line?;
       let tokens: Vec<&str> = ll.split(" ").collect();
 
-      config_map.insert(tokens[0].to_string(), tokens[1].to_string());
-    }
+      if tokens[0].to_string() == "ScriptAlias" {
+        let string = trim_string(tokens[2].to_string());
+        self.config_map.insert(tokens[1].to_string(), string);
 
-    print!("{:#?}",config_map);
-    
+      } else if tokens[0].to_string() == "Alias" {
+        let string = trim_string(tokens[2].to_string());
+        self.config_map.insert(tokens[1].to_string(), string);
+
+      } else {
+        let char_vec: Vec<char> = tokens[1].chars().collect();
+        let first_el = char_vec[0];
+
+        if first_el == '\"' {
+          let string = trim_string(tokens[1].to_string());
+          self.config_map.insert(tokens[0].to_string(), string);
+
+        } else {
+          self.config_map.insert(tokens[0].to_string(), tokens[1].to_string());
+        }
+      }
+    }
     Ok(())
   }
 
-  fn lookup(&self) -> String {
-    return "Test".to_string();
+  fn get_config(&self) -> &HashMap<String, String> {
+    return &self.config_map;
   }
+}
+
+fn trim_string(s:String) -> String {
+  let mut char_vec: Vec<char> = s.chars().collect();
+  char_vec.remove(0);
+
+  let veclen = char_vec.len() - 1;
+  char_vec.remove(veclen);
+
+  let string: String = char_vec.into_iter().collect();
+  string
 }
