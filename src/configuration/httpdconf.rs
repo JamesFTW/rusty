@@ -6,6 +6,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::io::{BufReader, BufRead, Error};
 
+#[derive(Debug)]
 pub struct HttpdConf {
   pub filepath: &'static str,
   pub config_map: HashMap<String, String>,

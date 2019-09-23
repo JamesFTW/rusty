@@ -1,11 +1,11 @@
 
 use super::config::Config as Config;
-use crate::configuration::util::trim as trim;
 
 use std::collections::HashMap;
 use std::fs;
 use std::io::{BufReader, BufRead, Error};
 
+#[derive(Debug)]
 pub struct MimeTypeConf {
   pub filepath: &'static str,
   pub config_map: HashMap<String, String>,
