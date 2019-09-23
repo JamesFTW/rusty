@@ -1,9 +1,10 @@
 mod configuration;
 use crate::configuration::config::Config;
-
-use configuration::httpdconf as CONFIG;
+use configuration::configurationreader::ConfigurationReader as ConfigReader;
 
 fn main() {
-  let config = CONFIG::HttpdConf {filepath: "/desktop/files"};
-  println!("{:?}", config.lookup());
+  let mut test = ConfigReader::get_config("HTTPD_CONF");
+  test.load();
+
+  println!("{:#?}", test.get_config());
 }
